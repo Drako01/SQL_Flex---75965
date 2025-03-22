@@ -604,6 +604,71 @@ SELECT * FROM alumnos WHERE apellido REGEXP '[- ]';
 
 ---
 
+### ❌ **Error en la sintaxis de `LIKE` en MySQL**  
+Las consultas que escribiste usan **rangos de caracteres `[A-B]` y negaciones `[^DV]`**, pero **esto no es compatible con `LIKE` en MySQL**.  
+
+✅ **En MySQL, debes usar `REGEXP` en lugar de `LIKE`** para estos casos.  
+
+---
+
+## **📌 Conversión de tus consultas a MySQL (`REGEXP`)**  
+
+### **1️⃣ Buscar alumnos cuyos nombres comiencen con "A" o "B"**  
+**SQL Incorrecto (No funciona en MySQL con `LIKE`):**  
+```sql
+SELECT * FROM alumnos WHERE nombre LIKE '[A-B]%';
+```
+✅ **Corrección con `REGEXP`:**  
+```sql
+SELECT * FROM alumnos WHERE nombre REGEXP '^[A-B]';
+```
+🔹 **Explicación:**  
+- `^` → Indica que la coincidencia debe estar al **inicio** del nombre.  
+- `[A-B]` → Acepta nombres que **empiecen con "A" o "B"**.  
+
+---
+
+### **2️⃣ Buscar alumnos cuyos nombres comiencen con "A" o "M" y contengan "del" en cualquier parte**  
+**SQL Incorrecto (No funciona en MySQL con `LIKE`):**  
+```sql
+SELECT * FROM alumnos WHERE first_name LIKE '[AM]%del%';
+```
+✅ **Corrección con `REGEXP`:**  
+```sql
+SELECT * FROM alumnos WHERE nombre REGEXP '^[AM].*del.*';
+```
+🔹 **Explicación:**  
+- `^[AM]` → **Empieza con "A" o "M"**.  
+- `.*del.*` → Contiene **"del" en cualquier parte** del nombre.  
+
+---
+
+### **3️⃣ Buscar alumnos cuyos nombres NO empiecen con "D" o "V"**  
+**SQL Incorrecto (No funciona en MySQL con `LIKE`):**  
+```sql
+SELECT * FROM alumnos WHERE name LIKE '[^DV]%';
+```
+✅ **Corrección con `REGEXP`:**  
+```sql
+SELECT * FROM alumnos WHERE nombre REGEXP '^[^DV]';
+```
+🔹 **Explicación:**  
+- `^` **dentro de los corchetes (`[^DV]`)** → Niega los caracteres dentro, es decir, **excluye los nombres que comiencen con "D" o "V"**.  
+
+---
+
+## **📌 Resumen de la conversión de `LIKE` a `REGEXP` en MySQL**  
+| **Consulta original (`LIKE` en SQL Server)** | **Conversión correcta (`REGEXP` en MySQL)** |
+|---------------------------------|---------------------------------|
+| `LIKE '[A-B]%'` | `REGEXP '^[A-B]'` |
+| `LIKE '[AM]%del%'` | `REGEXP '^[AM].*del.*'` |
+| `LIKE '[^DV]%'` | `REGEXP '^[^DV]'` |
+
+✅ **Usa `LIKE` para búsquedas simples con `%`.**  
+✅ **Usa `REGEXP` para búsquedas avanzadas con rangos `[ ]`, negaciones `[^ ]` y patrones más complejos.**  
+
+
+
 ## **📌 6. Conclusión**
 
 ✅ **`REGEXP` es una herramienta poderosa** que permite hacer búsquedas avanzadas, validaciones y limpieza de datos en MySQL.  
