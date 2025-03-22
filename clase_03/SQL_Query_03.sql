@@ -104,7 +104,20 @@ VALUES
  WHERE email LIKE "%gmail.com"
  ORDER BY nombre ASC;
 
+ SELECT nombre, apellido, dni, telefono, edad
+ FROM alumnos 
+ WHERE nombre REGEXP "^[A-C]"
+ ORDER BY nombre ASC;
+ 
+SELECT nombre, apellido, dni, telefono, edad
+ FROM alumnos 
+	WHERE nombre LIKE "A%"
+	OR nombre LIKE "C%"
+ ORDER BY nombre ASC;
+
+ 
 SELECT nombre, apellido, dni, telefono, edad , email FROM alumnos WHERE email REGEXP '^[a-z]+@[a-z]+\\.(com|net)$';
+
 
 
 -- Subconsultas de SQL
