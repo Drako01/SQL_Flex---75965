@@ -1,7 +1,4 @@
 # **📌 Ejercicios de SQL - MySQL**  
-
-Aquí tienes una lista de ejercicios **SIN respuestas** para practicar **todos los temas** que hemos visto, incluyendo `JOIN`, `LIKE`, `REGEXP`, `Funciones Escalares`, `Subconsultas` y más.  
-
 ---
 
 ## **📌 1. Ejercicios de `JOIN`**  
