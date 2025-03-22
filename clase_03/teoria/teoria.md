@@ -1,6 +1,6 @@
-### **Clase de SQL Nro 3**
+# 🛢 **Clase de SQL Nro 3** 
 
-#### **Objetivo General:**
+### **Objetivo General:**
 
 En esta clase, veremos los conceptos clave de SQL relacionados con consultas avanzadas, manipulación de datos y funciones. Se enfocará en MySQL, aplicando ejemplos prácticos para reforzar cada tema.
 
