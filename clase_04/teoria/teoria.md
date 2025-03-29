@@ -114,10 +114,121 @@ CREATE TABLE pedidos (
 ```
 
 ## 4.3 Índices
-Mejoran el rendimiento de las consultas.
+# 🔹 **Uso de `INDEX` en SQL: Qué es, Cómo se Usa y Sus Ventajas**  
+
+El uso de **índices (`INDEX`)** en SQL es una de las técnicas más importantes para mejorar el rendimiento de las consultas en bases de datos.  
+
+---
+
+## 🔹 **¿Qué es un Índice (`INDEX`) en SQL?**  
+Un **índice** en SQL es una estructura de datos que acelera la búsqueda de registros en una tabla, similar a un índice en un libro.  
+
+✔ **Permite encontrar datos rápidamente sin tener que recorrer toda la tabla**.  
+✔ **Optimiza consultas con `WHERE`, `JOIN`, `ORDER BY`, y `GROUP BY`**.  
+✔ **Reduce la cantidad de filas analizadas** en una consulta.  
+
+---
+
+## 🔹 **Cómo Crear un Índice (`INDEX`)**
+Para **crear un índice en una columna**, usamos `CREATE INDEX`:  
+
 ```sql
-CREATE INDEX idx_nombre ON empleados(nombre);
+CREATE INDEX idx_nombre ON alumnos (nombre);
 ```
+✔ Esto crea un índice llamado `idx_nombre` en la columna `nombre` de la tabla `alumnos`.  
+
+---
+
+## 🔹 **Tipos de Índices en SQL**
+| Tipo de Índice | Descripción | Uso Común |
+|---------------|------------|-----------|
+| **Índice Normal (`INDEX`)** | Acelera búsquedas en una o varias columnas. | Columnas con búsquedas frecuentes (`WHERE`). |
+| **Índice Único (`UNIQUE INDEX`)** | Garantiza que los valores en la columna sean únicos. | `email`, `dni`, `usuario`. |
+| **Índice Compuesto (`COMPOSITE INDEX`)** | Índice en múltiples columnas. | Consultas con varias condiciones (`WHERE columna1 AND columna2`). |
+| **Índice de Texto Completo (`FULLTEXT INDEX`)** | Para búsquedas en textos grandes. | Campos tipo `VARCHAR` o `TEXT`. |
+| **Índice Clúster (`CLUSTERED INDEX`)** | Ordena físicamente los datos en la tabla. | `PRIMARY KEY`. |
+
+---
+
+## 🔹 **Ejemplo: Índice para Optimizar una Búsqueda**
+Sin índice, esta consulta escanea **toda la tabla** (muy lento en tablas grandes):  
+
+```sql
+EXPLAIN SELECT * FROM alumnos WHERE nombre = 'Juan';
+```
+
+Si `type = ALL`, significa que está escaneando **toda la tabla**, lo que es ineficiente.  
+
+### ✅ **Solución: Crear un Índice en `nombre`**
+```sql
+CREATE INDEX idx_nombre ON alumnos (nombre);
+```
+Ahora, MySQL puede **usar el índice en lugar de recorrer toda la tabla**, mejorando el rendimiento.  
+
+---
+
+## 🔹 **Ejemplo: Índice Compuesto para Acelerar `WHERE` con Múltiples Condiciones**
+Si hacemos muchas búsquedas con `nombre` y `apellido`:  
+```sql
+SELECT * FROM alumnos WHERE nombre = 'Juan' AND apellido = 'Pérez';
+```
+Podemos crear un **índice compuesto** en ambas columnas:  
+```sql
+CREATE INDEX idx_nombre_apellido ON alumnos (nombre, apellido);
+```
+✔ Esto hace que las búsquedas sean **mucho más rápidas**.
+
+---
+
+## 🔹 **Ejemplo: Índice `UNIQUE` para Evitar Duplicados**
+Para evitar que dos alumnos tengan el mismo `dni`, usamos un índice único:  
+```sql
+CREATE UNIQUE INDEX idx_dni ON alumnos (dni);
+```
+Si alguien intenta insertar un `dni` repetido, **SQL lanzará un error**.
+
+---
+
+## 🔹 **¿Cómo Saber Si una Consulta Usa un Índice?**
+Usamos `EXPLAIN` para analizar la consulta:  
+
+```sql
+EXPLAIN SELECT * FROM alumnos WHERE nombre = 'Juan';
+```
+
+Si MySQL usa un índice, el `type` será `INDEX`, `REF` o `RANGE`, lo cual indica que la búsqueda es eficiente.  
+
+---
+
+## 🔹 **Desventajas de los Índices**
+❌ **Ocupan Espacio en Disco**: Cada índice requiere almacenamiento adicional.  
+❌ **Retrasan Inserciones y Actualizaciones**: Cada vez que insertamos o actualizamos un registro, SQL debe actualizar los índices.  
+❌ **Demasiados Índices Pueden Ser Perjudiciales**: Usar índices innecesarios puede afectar el rendimiento.  
+
+---
+
+## 🔹 **¿Cuándo Usar Índices?**
+✔ Cuando realizamos **búsquedas frecuentes** en una columna.  
+✔ En columnas usadas en **`WHERE`, `JOIN`, `ORDER BY`, `GROUP BY`**.  
+✔ En claves primarias y claves foráneas.  
+
+❌ **No crear índices en columnas con pocos valores distintos** (ejemplo: `sexo` con valores "M" o "F").  
+
+---
+
+## 🔹 **Eliminar un Índice**
+Si un índice no es útil, podemos eliminarlo:  
+```sql
+DROP INDEX idx_nombre ON alumnos;
+```
+
+---
+
+## 🔹 **Conclusión**
+✅ **Los índices mejoran la velocidad de las consultas**.  
+✅ **Deben usarse estratégicamente** para no afectar el rendimiento en inserciones.  
+✅ **Es importante analizarlos con `EXPLAIN` para ver si realmente están optimizando la consulta**.  
+
 
 ## 4.4 Claves Candidatas
 Son atributos únicos que podrían ser clave primaria.
