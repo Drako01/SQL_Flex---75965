@@ -64,8 +64,31 @@ END //
 
 DELIMITER ;
 
+-- Avisar que el Alumno ya se inscribio a un Curso
+DELIMITER //
+
+CREATE TRIGGER before_inscription_insert
+BEFORE INSERT ON inscripciones
+FOR EACH ROW
+BEGIN
+	DECLARE existe INT;
+	
+    SELECT COUNT(*) INTO existe
+    FROM inscripciones
+    WHERE id_alumno = NEW.id_alumno AND id_curso = NEW.id_curso;
+    
+    -- Si ya existe
+    IF existe > 0 THEN 
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El Alumno ya esta inscripto a este curso';
+	END IF;
+END //
+
+DELIMITER ;
+
+
 INSERT INTO inscripciones (id_alumno, id_curso) VALUES
-	(22,2), (22,3);
+	(22,2);
     
 -- Funciones
 DELIMITER //
@@ -83,3 +106,6 @@ BEGIN
 END //
 
 DELIMITER ;
+
+-- Llamar a la Funcion
+SELECT CantidadDeInscriptosCurso(4);
