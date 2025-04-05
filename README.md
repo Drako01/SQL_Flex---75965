@@ -1,5 +1,8 @@
 # 🗄️ SQL - Modalidad Flex | CoderHouse 🏫  
-![CoderHouse Logo](https://jobs.coderhouse.com/assets/logos_coderhouse.png)  
+
+<p align="center"> 
+    <img src="https://jobs.coderhouse.com/assets/logos_coderhouse.png" alt="CoderHouse"  height="100"/>
+</p>
 
 ## 📌 Comisión **75965**  
 
