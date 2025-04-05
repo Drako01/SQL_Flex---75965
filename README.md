@@ -4,6 +4,13 @@
     <img src="https://jobs.coderhouse.com/assets/logos_coderhouse.png" alt="CoderHouse"  height="100"/>
 </p>
 
+<p align="center"> 
+ <a href="https://www.w3.org/html/" target="_blank"> 
+     <img src="https://cdn.icon-icons.com/icons2/2699/PNG/512/mysql_official_logo_icon_169938.png" alt="sql" height="100"/></a> 
+   
+</p>
+
+
 ## 📌 Comisión **75965**  
 
 🔹 **Días:** Sábados  
