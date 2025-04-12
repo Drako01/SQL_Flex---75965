@@ -94,12 +94,10 @@ A continuación se presentan 50 nuevos ejercicios prácticos para reforzar conce
 
 ---
 
-
 📚 Estos ejercicios te ayudarán a reforzar todo lo aprendido. ¡No te olvides de probarlos en un entorno real!
 """
 
 ---
-
 
 ## 🧑‍🏫 Profesor  
 
