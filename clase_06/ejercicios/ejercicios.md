@@ -134,3 +134,12 @@ Voy a dividirlos en secciones temáticas para que estén organizados:
 99. Crear tabla con tipo de dato inválido (`VARCHAR(-5)`).
 100. Insertar `fecha_nacimiento` con formato incorrecto (`"31-02-2024"`).
 
+
+---
+
+
+## 🧑‍🏫 Profesor  
+
+👨‍💻 **Alejandro Daniel Di Stefano**  
+📌 **Desarrollador Full Stack**  
+🔗 **GitHub:** [Drako01](https://github.com/Drako01)  
