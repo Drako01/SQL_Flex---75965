@@ -12,7 +12,7 @@ Que el alumno:
 
 ---
 
-# 🧩 PARTE 1 — Conceptos Básicos (20 min)
+# 🧩 PARTE 1 — Conceptos Básicos 
 
 ## 1. ¿Qué es importar datos?
 >
