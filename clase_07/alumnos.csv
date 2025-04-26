@@ -1,0 +1,17 @@
+"id_alumno","nombre","apellido","email","dni","telefono","nacionalidad","fecha_inscripcion","instituto","edad"
+4,"Alejandro","Di Stefano","alejandro@mail.com",22233355,"115555666","Argentina","2025-03-15 12:43:04","CoderHouse",49
+5,"Juan","Perez","perez@mail.com",113333666,"1166667777","Argentina","2025-03-15 12:43:04","CoderHouse",30
+7,"Marcela","Muñoz","ivana@mail.com",33555888,"1166333777","Argentina","2025-03-15 12:52:35","CoderHouse",20
+8,"Marcela","Perez","marce@mail.com",22686777,"12555666","Uruguaya","2025-03-15 12:53:52","CoderHouse",26
+15,"Marcelo","Perez","marcelo@gmail.com",55666677,"1254654","Uruguaya","2025-03-15 13:28:56","CoderHouse",29
+16,"Enzo","Godoy","enzo@mail.com",55996677,"1253354","Brasilero","2025-03-15 13:28:56","CoderHouse",22
+17,"Julian","Alvarez","julian@mail.com",55688677,"1251124","Peruano","2025-03-15 13:28:56","CoderHouse",33
+18,"Cristian","Diaz","cris@gmail.com",55222677,"1111654","Chileno","2025-03-15 13:28:56","CoderHouse",21
+19,"Raul","Leiva","raul@mail.com",55446677,"1251654","Chileno","2025-03-15 13:28:56","CoderHouse",31
+20,"Wanda","Nara","wandaylgante@mail.com",22444488,"4545454","Argentina","2025-03-15 13:28:56","CoderHouse",31
+21,"Romina","Baron","romy@mail.com",53333677,"1254154","Peruano","2025-03-15 13:28:56","CoderHouse",27
+22,"China","Suarez","chinaicardi@gmail.com",22686677,"19955666","Argentina","2025-03-15 13:29:43","CoderHouse",35
+23,"Adrian","Perez","Adrian@mail.com",55669997,"12154654","Uruguaya","2025-03-22 12:41:18","CoderHouse",29
+24,"Andres","Perez","Andres@mail.com",57866677,"12541654","Uruguaya","2025-03-22 12:41:18","CoderHouse",29
+25,"Adrian","Perez","Adrian@gmail.com",556699947,"121454654","Uruguaya","2025-03-22 12:42:18","CoderHouse",29
+26,"Andres","Perez","Andres@gmail.com",574866677,"125414654","Uruguaya","2025-03-22 12:42:18","CoderHouse",29
