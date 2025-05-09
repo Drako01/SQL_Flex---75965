@@ -83,6 +83,135 @@ SELECT alumno_id,
 FROM Notas;
 ```
 
+Perfecto, estás buscando una explicación **paso a paso, clara y detallada**, ideal para alumnos que están empezando desde cero. Vamos a desglosar todo lo que aparece en este fragmento SQL y los conceptos que lo rodean.
+
+---
+
+## 🔍 Consulta SQL
+
+```sql
+SELECT alumno_id,
+dbo.calcular_promedio(parcial1, parcial2, final) AS nota_final
+FROM Notas;
+```
+
+---
+
+## 🧠 ¿Qué hace esta consulta?
+
+Esta consulta **obtiene el ID del alumno** y **calcula su nota final** usando una función llamada `calcular_promedio`, tomando las notas del parcial 1, parcial 2 y el final. La consulta se aplica sobre la tabla `Notas`.
+
+---
+
+## 🧩 Desglose paso a paso
+
+### `SELECT`
+
+Palabra clave que **inicia una consulta**. Sirve para **pedir datos** de una tabla.
+
+```sql
+SELECT columna1, columna2
+```
+
+> En este caso:
+
+```sql
+SELECT alumno_id,
+```
+
+Selecciona la columna `alumno_id` (el ID del alumno).
+
+---
+
+### `dbo.calcular_promedio(...)`
+
+#### 🔹 ¿Qué es `calcular_promedio(...)`?
+
+Es una **función personalizada** (creada por el usuario) que probablemente **devuelve el promedio** de tres notas (parcial1, parcial2, final).
+
+#### 🔹 ¿Qué es `dbo`?
+
+`dbo` es el **esquema** al que pertenece la función. En bases de datos como **SQL Server**, cada objeto (tabla, función, etc.) **pertenece a un esquema**.
+
+* `dbo` significa **database owner** (propietario de la base de datos).
+* Es el esquema **por defecto** en la mayoría de los casos.
+
+> 📌 Entonces `dbo.calcular_promedio(...)` significa:
+> “Ejecutar la función `calcular_promedio` del esquema `dbo`”.
+
+---
+
+### `AS nota_final`
+
+* `AS` sirve para darle un **alias** (nombre alternativo o temporal) a una columna en el resultado.
+* En este caso, el resultado de la función `calcular_promedio(...)` se mostrará como `nota_final`.
+
+```sql
+dbo.calcular_promedio(...) AS nota_final
+```
+
+> Es decir: “Mostrame el promedio, y llamalo `nota_final` en el resultado”.
+
+---
+
+### `FROM Notas`
+
+Indica de **dónde** se van a obtener los datos. En este caso, de la tabla `Notas`.
+
+> 🗂️ La tabla `Notas` tiene columnas como `alumno_id`, `parcial1`, `parcial2`, `final`.
+
+---
+
+## 🧮 ¿Cómo sería esa función `calcular_promedio`?
+
+Te muestro un ejemplo real en SQL Server:
+
+```sql
+CREATE FUNCTION calcular_promedio (
+  @p1 DECIMAL(5,2),
+  @p2 DECIMAL(5,2),
+  @final DECIMAL(5,2)
+)
+RETURNS DECIMAL(5,2)
+AS
+BEGIN
+  RETURN (@p1 + @p2 + @final) / 3;
+END;
+```
+
+---
+
+## 💡 ¿Qué significa `=` en SQL?
+
+El signo igual `=` es un **operador de comparación**.
+
+### Se usa para:
+
+* Comparar valores (ej: `WHERE alumno_id = 1`)
+* Asignar valores dentro de sentencias como `SET`, o dentro de funciones y procedimientos.
+
+Ejemplo:
+
+```sql
+DECLARE @promedio DECIMAL(5,2);
+SET @promedio = (8 + 9 + 10) / 3;
+```
+
+---
+
+## 📌 Resumen visual:
+
+| Concepto              | Significado                                   |
+| --------------------- | --------------------------------------------- |
+| `SELECT`              | Pide columnas de una tabla                    |
+| `dbo`                 | Esquema (propietario de objeto en SQL Server) |
+| `calcular_promedio()` | Función que devuelve el promedio de 3 notas   |
+| `AS nota_final`       | Alias: renombra la columna en el resultado    |
+| `FROM Notas`          | Indica la tabla de donde se sacan los datos   |
+| `=`                   | Operador de comparación o asignación          |
+
+
+
 ---
 
 ## 3️⃣ ¿Qué es un Stored Procedure (Procedimiento Almacenado)?
