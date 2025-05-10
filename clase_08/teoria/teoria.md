@@ -315,7 +315,7 @@ CALL nombre_procedimiento(valor1, valor2);
 
 ```sql
 CREATE TABLE Alumnos (
-    id INT IDENTITY PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100),
     apellido VARCHAR(100),
     email VARCHAR(100),
