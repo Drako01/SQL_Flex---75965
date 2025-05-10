@@ -11,9 +11,13 @@
 
 ---
 
+Claro, aquí tienes la adaptación del concepto y ejemplos a MySQL:
+
+---
+
 ## 1️⃣ ¿Qué es una función personalizada en SQL?
 
-Una **función personalizada** (o "user-defined function", UDF) es un bloque de código reutilizable que acepta parámetros, realiza operaciones y devuelve un valor.
+Una **función personalizada** (o "user-defined function", UDF) en MySQL es un bloque de código que se puede **reutilizar** para realizar cálculos o transformaciones y devolver un valor.
 
 👉 **Sirve para:**
 
@@ -23,30 +27,36 @@ Una **función personalizada** (o "user-defined function", UDF) es un bloque de 
 
 🧾 **Tipos de funciones en SQL:**
 
-- **Escalares:** Devuelven un solo valor (ej. una nota promedio).
-- **De tabla:** Devuelven una tabla completa.
+- **Escalares:** Devuelven un solo valor (por ejemplo, una nota promedio).
+- **De tabla:** Devuelven una tabla completa (aunque en MySQL las funciones personalizadas suelen ser escalares).
 
 ---
 
 ## 2️⃣ Sintaxis básica para crear funciones escalares
 
 ```sql
-CREATE FUNCTION nombre_funcion (@param1 tipo, @param2 tipo)
+CREATE FUNCTION nombre_funcion (param1 tipo, param2 tipo)
 RETURNS tipo_de_dato
-AS
+DETERMINISTIC
 BEGIN
-    DECLARE @resultado tipo_de_dato;
     -- Lógica
-    SET @resultado = ...;
-    RETURN @resultado;
+    RETURN resultado;
 END;
-````
+```
+
+### 🧠 Explicación
+
+- **`CREATE FUNCTION`**: Define una nueva función personalizada.
+- **`param1 tipo, param2 tipo`**: Especifica los parámetros de entrada y sus tipos.
+- **`RETURNS tipo_de_dato`**: Define el tipo de valor que la función devolverá.
+- **`DETERMINISTIC`**: Indica que la función siempre devuelve el mismo resultado con los mismos parámetros.
+- **`BEGIN ... END`**: Contiene la lógica de la función.
 
 ---
 
 ## 📚 Ejemplo práctico: Calcular nota final de un alumno
 
-### Supongamos una tabla de notas
+### Supongamos que tenemos una tabla de notas
 
 ```sql
 CREATE TABLE Notas (
@@ -62,16 +72,14 @@ CREATE TABLE Notas (
 
 ```sql
 CREATE FUNCTION calcular_promedio (
-    @p1 DECIMAL(5,2),
-    @p2 DECIMAL(5,2),
-    @final DECIMAL(5,2)
+  p1 DECIMAL(5,2),
+  p2 DECIMAL(5,2),
+  final DECIMAL(5,2)
 )
 RETURNS DECIMAL(5,2)
-AS
+DETERMINISTIC
 BEGIN
-    DECLARE @promedio DECIMAL(5,2);
-    SET @promedio = (@p1 + @p2 + @final) / 3;
-    RETURN @promedio;
+  RETURN (p1 + p2 + final) / 3;
 END;
 ```
 
@@ -87,7 +95,7 @@ FROM Notas;
 
 ## 🧠 ¿Qué hace esta consulta?
 
-Esta consulta **obtiene el ID del alumno** y **calcula su nota final** usando una función llamada `calcular_promedio`, tomando las notas del parcial 1, parcial 2 y el final. La consulta se aplica sobre la tabla `Notas`.
+La consulta **obtiene el ID del alumno** y **calcula su nota final** usando la función `calcular_promedio`, que toma las notas de los parciales y el examen final. La consulta se aplica a la tabla `Notas`.
 
 ---
 
@@ -95,7 +103,7 @@ Esta consulta **obtiene el ID del alumno** y **calcula su nota final** usando un
 
 ### `SELECT`
 
-Palabra clave que **inicia una consulta**. Sirve para **pedir datos** de una tabla.
+- **Palabra clave** que inicia una consulta y permite **pedir datos** de una tabla.
 
 ```sql
 SELECT columna1, columna2
@@ -115,27 +123,26 @@ Selecciona la columna `alumno_id` (el ID del alumno).
 
 #### 🔹 ¿Qué es `calcular_promedio(...)`?
 
-Es una **función personalizada** (creada por el usuario) que probablemente **devuelve el promedio** de tres notas (parcial1, parcial2, final).
-
+Es una **función personalizada** creada por el usuario, que **devuelve el promedio** de las tres notas (parcial1, parcial2, final).
 
 ---
 
 ### `AS nota_final`
 
-- `AS` sirve para darle un **alias** (nombre alternativo o temporal) a una columna en el resultado.
+- **`AS`** sirve para darle un **alias** (nombre alternativo o temporal) a una columna en el resultado.
 - En este caso, el resultado de la función `calcular_promedio(...)` se mostrará como `nota_final`.
 
 ```sql
 calcular_promedio(...) AS nota_final
 ```
 
-> Es decir: “Mostrame el promedio, y llamalo `nota_final` en el resultado”.
+> Es decir: "Muéstrame el promedio, y llámalo `nota_final` en el resultado".
 
 ---
 
 ### `FROM Notas`
 
-Indica de **dónde** se van a obtener los datos. En este caso, de la tabla `Notas`.
+- **`FROM`** indica de **dónde** se van a obtener los datos. En este caso, de la tabla `Notas`.
 
 > 🗂️ La tabla `Notas` tiene columnas como `alumno_id`, `parcial1`, `parcial2`, `final`.
 
@@ -143,37 +150,71 @@ Indica de **dónde** se van a obtener los datos. En este caso, de la tabla `Nota
 
 ## 🧮 ¿Cómo sería esa función `calcular_promedio`?
 
-Te muestro un ejemplo real en SQL Server:
+La función `calcular_promedio` en MySQL sería de esta forma:
 
 ```sql
-CREATE FUNCTION calcular_promedio (
-  @p1 DECIMAL(5,2),
-  @p2 DECIMAL(5,2),
-  @final DECIMAL(5,2)
-)
+CREATE FUNCTION calcular_promedio(p1 DECIMAL(5,2), p2 DECIMAL(5,2), final DECIMAL(5,2))
 RETURNS DECIMAL(5,2)
-AS
+DETERMINISTIC
 BEGIN
-  RETURN (@p1 + @p2 + @final) / 3;
+    DECLARE promedio DECIMAL(5,2);
+    SET promedio = (p1 + p2 + final) / 3;
+    RETURN promedio;
 END;
 ```
+
+### Detalles
+
+- **`DECLARE promedio DECIMAL(5,2);`**: Declara una variable `promedio` de tipo `DECIMAL(5,2)`.
+- **`SET promedio = ...;`**: Asigna el valor del promedio.
+- **`RETURN promedio;`**: Devuelve el valor calculado.
 
 ---
 
 ## 💡 ¿Qué significa `=` en SQL?
 
-El signo igual `=` es un **operador de comparación**.
+En SQL, el signo igual `=` es un **operador de comparación o asignación**, dependiendo del contexto.
 
 ### Se usa para
 
-- Comparar valores (ej: `WHERE alumno_id = 1`)
-- Asignar valores dentro de sentencias como `SET`, o dentro de funciones y procedimientos.
+1. **Comparar valores** en condiciones (`WHERE`, `IF`, etc.):
+   👉 Ejemplo:
 
-Ejemplo:
+   ```sql
+   SELECT * FROM Notas WHERE alumno_id = 1;
+   ```
+
+2. **Asignar valores** a variables dentro de procedimientos o funciones, usando `SET`:
+
+   ```sql
+   SET promedio = (p1 + p2 + final) / 3;
+   ```
+
+---
+
+Este ejemplo muestra cómo crear una función personalizada en MySQL para calcular el promedio de las notas de un alumno y usarla en una consulta. Las funciones personalizadas en SQL son una herramienta poderosa para simplificar y organizar el código.
+
+---
+
+### 🧪 Ejemplo en MySQL Workbench
 
 ```sql
-DECLARE @promedio DECIMAL(5,2);
-SET @promedio = (8 + 9 + 10) / 3;
+DELIMITER //
+
+CREATE PROCEDURE ejemplo_asignacion()
+BEGIN
+    DECLARE promedio DECIMAL(5,2);
+    SET promedio = (8 + 9 + 10) / 3;
+    SELECT promedio AS resultado;
+END //
+
+DELIMITER ;
+```
+
+Y se ejecuta con:
+
+```sql
+CALL ejemplo_asignacion();
 ```
 
 ---
@@ -239,26 +280,31 @@ En lugar de escribir siempre la misma serie de instrucciones SQL, las podemos gu
 | ¿Puede tener lógica compleja? | Limitada                   | Sí (IF, WHILE, INSERT, UPDATE, etc.) |
 | ¿Se puede usar en SELECT?     | Sí                         | No directamente                      |
 | ¿Modifica datos?              | No (en teoría)             | Sí                                   |
-| ¿Usa `RETURN`?                | Sí                         | Opcional (usa `OUTPUT` o `PRINT`)    |
 
 ---
 
 ## 5️⃣ Sintaxis básica de un Stored Procedure
 
 ```sql
-CREATE PROCEDURE nombre_procedimiento
-    @param1 tipo,
-    @param2 tipo
-AS
+DELIMITER //
+
+CREATE PROCEDURE nombre_procedimiento(
+    IN param1 tipo,
+    IN param2 tipo
+)
 BEGIN
     -- Bloque de código SQL
-END;
+END //
+
+DELIMITER ;
+
 ```
 
 🛠️ Para ejecutarlo:
 
 ```sql
-EXEC nombre_procedimiento @param1 = valor1, @param2 = valor2;
+CALL nombre_procedimiento(valor1, valor2);
+
 ```
 
 ---
@@ -277,40 +323,57 @@ CREATE TABLE Alumnos (
 );
 ```
 
-### Crear Stored Procedure
+---
+
+## **1️⃣ Crear Stored Procedure en MySQL**
+
+En MySQL, el **DELIMITER** se utiliza para cambiar el delimitador temporalmente (en este caso `//`) y así poder definir un procedimiento que contiene múltiples sentencias. Además, en MySQL no es necesario especificar el tipo de parámetro (`IN` es opcional, pero es recomendable usarlo por claridad).
+
+### Procedimiento para agregar un alumno
 
 ```sql
-CREATE PROCEDURE agregar_alumno
-    @nombre VARCHAR(100),
-    @apellido VARCHAR(100),
-    @email VARCHAR(100),
-    @fecha_nac DATE
-AS
+DELIMITER //
+
+CREATE PROCEDURE agregar_alumno (
+    IN p_nombre VARCHAR(100),
+    IN p_apellido VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_fecha_nac DATE
+)
 BEGIN
     INSERT INTO Alumnos (nombre, apellido, email, fecha_nacimiento)
-    VALUES (@nombre, @apellido, @email, @fecha_nac);
-END;
-```
+    VALUES (p_nombre, p_apellido, p_email, p_fecha_nac);
+END //
 
-### Ejecutar
-
-```sql
-EXEC agregar_alumno 
-    @nombre = 'Laura',
-    @apellido = 'Pérez',
-    @email = 'laura.perez@email.com',
-    @fecha_nac = '2004-03-12';
+DELIMITER ;
 ```
 
 ---
 
-## 7️⃣ Ejemplo 2: Registrar una nota (más realista)
+## **2️⃣ Ejecutar Stored Procedure en MySQL**
 
-Supongamos que tenemos esta tabla:
+En MySQL, se usa `CALL` en lugar de `EXEC` para invocar un procedimiento almacenado. A continuación, te muestro cómo llamar al procedimiento `agregar_alumno`:
+
+```sql
+CALL agregar_alumno('Laura', 'Pérez', 'laura.perez@email.com', '2004-03-12');
+```
+
+**Notas importantes:**
+
+- No es necesario usar el prefijo `@` para los parámetros en la llamada, ya que los parámetros son directamente pasados al procedimiento.
+- El delimitador `DELIMITER` es utilizado para cambiar temporalmente el carácter delimitador en la definición del procedimiento y puede ser revertido a su valor por defecto (;) después de definir el procedimiento.
+
+---
+
+## **3️⃣ Ejemplo 2: Registrar una Nota en MySQL**
+
+### Tabla `Notas`
+
+En MySQL no se usa `IDENTITY`, sino que se usa `AUTO_INCREMENT` para generar valores de manera automática para las claves primarias. Además, en MySQL no es necesario especificar el tipo de auto incremento en el momento de la declaración de las columnas.
 
 ```sql
 CREATE TABLE Notas (
-    id INT IDENTITY PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     alumno_id INT,
     materia VARCHAR(100),
     parcial1 DECIMAL(4,2),
@@ -319,31 +382,78 @@ CREATE TABLE Notas (
 );
 ```
 
+### Stored Procedure para registrar una nota
+
+En MySQL, se puede crear un procedimiento almacenado para insertar una nueva nota para un alumno en la tabla `Notas`:
+
+```sql
+DELIMITER //
+
+CREATE PROCEDURE registrar_nota (
+    IN p_alumno_id INT,
+    IN p_materia VARCHAR(100),
+    IN p_parcial1 DECIMAL(4,2),
+    IN p_parcial2 DECIMAL(4,2),
+    IN p_final DECIMAL(4,2)
+)
+BEGIN
+    INSERT INTO Notas (alumno_id, materia, parcial1, parcial2, final)
+    VALUES (p_alumno_id, p_materia, p_parcial1, p_parcial2, p_final);
+END //
+
+DELIMITER ;
+```
+
+### Ejecutar la inserción de una nota
+
+Ahora, para registrar una nota para un alumno en la tabla `Notas`, puedes usar el siguiente comando en MySQL:
+
+```sql
+CALL registrar_nota(1, 'Matemáticas', 8.5, 7.0, 9.0);
+```
+
+En este caso:
+
+- `1` es el `alumno_id`.
+- `'Matemáticas'` es el nombre de la materia.
+- `8.5`, `7.0` y `9.0` son las calificaciones de los parciales y final.
+
+---
+
+### Resumen de cambios importantes
+
+- En MySQL, el delimitador `DELIMITER` se utiliza para cambiar el separador temporalmente mientras se crea un procedimiento.
+- La palabra clave `AUTO_INCREMENT` reemplaza a `IDENTITY` en la declaración de columnas con claves primarias auto incrementales.
+- Para ejecutar un procedimiento en MySQL, se usa `CALL` en lugar de `EXEC`.
+
+Ahora puedes crear y ejecutar procedimientos almacenados con estas instrucciones adaptadas a MySQL.
+
 ### Stored Procedure
 
 ```sql
-CREATE PROCEDURE registrar_nota
-    @alumno_id INT,
-    @materia VARCHAR(100),
-    @parcial1 DECIMAL(4,2),
-    @parcial2 DECIMAL(4,2),
-    @final DECIMAL(4,2)
-AS
+DELIMITER //
+
+CREATE PROCEDURE registrar_nota(
+    IN alumno_id INT,
+    IN materia VARCHAR(100),
+    IN parcial1 DECIMAL(4,2),
+    IN parcial2 DECIMAL(4,2),
+    IN final DECIMAL(4,2)
+)
 BEGIN
     INSERT INTO Notas (alumno_id, materia, parcial1, parcial2, final)
-    VALUES (@alumno_id, @materia, @parcial1, @parcial2, @final);
-END;
+    VALUES (alumno_id, materia, parcial1, parcial2, final);
+END //
+
+DELIMITER ;
+
 ```
 
 ### Ejecutar
 
 ```sql
-EXEC registrar_nota 
-    @alumno_id = 1,
-    @materia = 'Matemática',
-    @parcial1 = 7.5,
-    @parcial2 = 8.0,
-    @final = 9.0;
+CALL registrar_nota(1, 'Matemática', 7.5, 8.0, 9.0);
+
 ```
 
 ---
@@ -353,22 +463,24 @@ EXEC registrar_nota
 Supongamos que solo queremos actualizar el email **si el alumno existe**:
 
 ```sql
-CREATE PROCEDURE actualizar_email
-    @id INT,
-    @nuevo_email VARCHAR(100)
-AS
+DELIMITER //
+
+CREATE PROCEDURE actualizar_email (
+    IN p_id INT,
+    IN p_nuevo_email VARCHAR(100)
+)
 BEGIN
-    IF EXISTS (SELECT 1 FROM Alumnos WHERE id = @id)
-    BEGIN
+    IF EXISTS (SELECT 1 FROM Alumnos WHERE id = p_id) THEN
         UPDATE Alumnos
-        SET email = @nuevo_email
-        WHERE id = @id;
-    END
+        SET email = p_nuevo_email
+        WHERE id = p_id;
     ELSE
-    BEGIN
-        PRINT 'El alumno no existe.';
-    END
-END;
+        SELECT 'El alumno no existe.' AS mensaje;
+    END IF;
+END //
+
+DELIMITER ;
+
 ```
 
 ---
@@ -376,18 +488,22 @@ END;
 ## 9️⃣ Stored Procedure que devuelve un resultado (SELECT)
 
 ```sql
-CREATE PROCEDURE obtener_datos_alumno
-    @id INT
-AS
+DELIMITER //
+
+CREATE PROCEDURE obtener_datos_alumno(IN id INT)
 BEGIN
-    SELECT * FROM Alumnos WHERE id = @id;
-END;
+    SELECT * FROM Alumnos WHERE id = id;
+END //
+
+DELIMITER ;
+
 ```
 
 ### Ejecutar
 
 ```sql
-EXEC obtener_datos_alumno @id = 2;
+CALL obtener_datos_alumno(2);
+
 ```
 
 ---
@@ -395,31 +511,36 @@ EXEC obtener_datos_alumno @id = 2;
 ## 🔟 Stored Procedure con bucles (`WHILE`)
 
 ```sql
-CREATE PROCEDURE listar_alumnos_manual
-AS
-BEGIN
-    DECLARE @contador INT = 1;
-    DECLARE @max_id INT = (SELECT MAX(id) FROM Alumnos);
+DELIMITER //
 
-    WHILE @contador <= @max_id
-    BEGIN
-        IF EXISTS (SELECT 1 FROM Alumnos WHERE id = @contador)
-        BEGIN
-            SELECT * FROM Alumnos WHERE id = @contador;
-        END
-        SET @contador += 1;
-    END
-END;
+CREATE PROCEDURE listar_alumnos_manual()
+BEGIN
+    DECLARE contador INT DEFAULT 1;
+    DECLARE max_id INT;
+
+    -- Obtener el ID máximo
+    SELECT MAX(id) INTO max_id FROM Alumnos;
+
+    -- Bucle WHILE para recorrer los alumnos
+    WHILE contador <= max_id DO
+        -- Verificar si el alumno existe
+        IF EXISTS (SELECT 1 FROM Alumnos WHERE id = contador) THEN
+            SELECT * FROM Alumnos WHERE id = contador;
+        END IF;
+
+        -- Incrementar el contador
+        SET contador = contador + 1;
+    END WHILE;
+END //
+
+DELIMITER ;
+
 ```
 
----
-
-## 🧠 Tip final: Ver todos los Stored Procedures
-
-En SQL Server:
+### Ejecución del Procedimiento
 
 ```sql
-SELECT * FROM sys.procedures;
+CALL listar_alumnos_manual();
 ```
 
 ---
@@ -428,11 +549,11 @@ Vamos a **desglosar completamente** cada parte del tema **Stored Procedures** de
 
 ---
 
-# 📘 Stored Procedures: Explicado desde cero
+# 📘 **Stored Procedures: Explicado desde cero**
 
 ---
 
-## 🔹 ¿Qué es un Stored Procedure?
+## 🔹 **¿Qué es un Stored Procedure?**
 
 Un **Stored Procedure** (en español, *Procedimiento Almacenado*) es un **conjunto de instrucciones SQL** que se guarda en la base de datos y se puede ejecutar cuando lo necesites, con un solo comando.
 
@@ -446,12 +567,12 @@ VALUES ('Juan', 'Gómez', 'juan@email.com', '2003-05-12');
 En lugar de repetir eso mil veces, podés crear un procedimiento con nombre propio, por ejemplo: `agregar_alumno`, y después lo llamás así:
 
 ```sql
-EXEC agregar_alumno @nombre = 'Juan', @apellido = 'Gómez', ...
+CALL agregar_alumno('Juan', 'Gómez', 'juan@email.com', '2003-05-12');
 ```
 
 ---
 
-## 🔹 ¿Para qué sirve un Stored Procedure?
+## 🔹 **¿Para qué sirve un Stored Procedure?**
 
 | ¿Qué hace?                    | ¿Para qué sirve?                                     |
 | ----------------------------- | ---------------------------------------------------- |
@@ -463,58 +584,68 @@ EXEC agregar_alumno @nombre = 'Juan', @apellido = 'Gómez', ...
 
 ---
 
-## 🔹 Sintaxis básica
+## 🔹 **Sintaxis básica en MySQL**
 
 ```sql
-CREATE PROCEDURE nombre_del_procedimiento
-    @parametro1 tipo_dato,
-    @parametro2 tipo_dato
-AS
+DELIMITER //
+
+CREATE PROCEDURE nombre_del_procedimiento(
+    IN parametro1 tipo_dato,
+    IN parametro2 tipo_dato
+)
 BEGIN
     -- Aquí van las instrucciones SQL
-END;
+END //
+
+DELIMITER ;
 ```
 
 ---
 
-## 🔹 ¿Qué significa cada parte?
+## 🔹 **¿Qué significa cada parte?**
 
 | Parte                      | ¿Qué es?         | ¿Para qué sirve?                                                                   |
 | -------------------------- | ---------------- | ---------------------------------------------------------------------------------- |
-| `CREATE PROCEDURE`         | Palabra clave    | Le dice a SQL que vas a crear un procedimiento                                     |
+| `CREATE PROCEDURE`         | Palabra clave    | Le dice a MySQL que vas a crear un procedimiento                                   |
 | `nombre_del_procedimiento` | Nombre elegido   | Es el nombre con el que lo vas a ejecutar                                          |
-| `@parametro tipo_dato`     | Parámetros       | Son los valores que le pasás desde afuera (como el nombre del alumno, por ejemplo) |
-| `AS BEGIN ... END`         | Bloque de código | Encierra todo lo que va a hacer ese procedimiento                                  |
+| `IN parametro tipo_dato`   | Parámetros       | Son los valores que le pasás desde afuera (como el nombre del alumno, por ejemplo) |
+| `BEGIN ... END`            | Bloque de código | Encierra todo lo que va a hacer ese procedimiento                                  |
 
 ---
 
-## 🔹 ¿Cómo se ejecuta?
+## 🔹 **¿Cómo se ejecuta?**
 
 Una vez creado, se ejecuta así:
 
 ```sql
-EXEC nombre_del_procedimiento @param1 = valor1, @param2 = valor2;
+CALL nombre_del_procedimiento(valor1, valor2);
 ```
 
 ✅ **Ejemplo**:
 
 ```sql
-EXEC agregar_alumno 
-    @nombre = 'Laura',
-    @apellido = 'Pérez',
-    @email = 'laura@email.com',
-    @fecha_nac = '2004-03-12';
+CALL agregar_alumno('Laura', 'Pérez', 'laura@email.com', '2004-03-12');
 ```
 
 ---
 
-## 🔹 Ejemplo 1: Agregar un alumno
+### Explicación adicional de MySQL
+
+1. **Parámetros**: En MySQL, los parámetros se definen con `IN` para entrada, `OUT` para salida, y `INOUT` para ambos. En el ejemplo anterior, todos son de entrada (`IN`).
+
+2. **Delimitador**: En MySQL, se usa el `DELIMITER` para cambiar temporalmente el delimitador de sentencias para poder definir procedimientos con el símbolo `;` dentro del bloque del procedimiento.
+
+3. **Ejecución**: A diferencia de SQL Server que usa `EXEC`, en MySQL se utiliza el comando `CALL` para ejecutar un procedimiento almacenado.
+
+---
+
+## 🔹 **Ejemplo 1: Agregar un alumno**
 
 ### Crear tabla
 
 ```sql
 CREATE TABLE Alumnos (
-    id INT IDENTITY PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100),
     apellido VARCHAR(100),
     email VARCHAR(100),
@@ -525,27 +656,31 @@ CREATE TABLE Alumnos (
 ### Crear el procedimiento
 
 ```sql
-CREATE PROCEDURE agregar_alumno
-    @nombre VARCHAR(100),
-    @apellido VARCHAR(100),
-    @email VARCHAR(100),
-    @fecha_nac DATE
-AS
+DELIMITER //
+
+CREATE PROCEDURE agregar_alumno(
+    IN nombre VARCHAR(100),
+    IN apellido VARCHAR(100),
+    IN email VARCHAR(100),
+    IN fecha_nac DATE
+)
 BEGIN
     INSERT INTO Alumnos (nombre, apellido, email, fecha_nacimiento)
-    VALUES (@nombre, @apellido, @email, @fecha_nac);
-END;
+    VALUES (nombre, apellido, email, fecha_nac);
+END //
+
+DELIMITER ;
 ```
 
 ---
 
-## 🔹 Ejemplo 2: Registrar una nota
+## 🔹 **Ejemplo 2: Registrar una nota**
 
 ### Tabla
 
 ```sql
 CREATE TABLE Notas (
-    id INT IDENTITY PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     alumno_id INT,
     materia VARCHAR(100),
     parcial1 DECIMAL(4,2),
@@ -557,89 +692,107 @@ CREATE TABLE Notas (
 ### Procedimiento
 
 ```sql
-CREATE PROCEDURE registrar_nota
-    @alumno_id INT,
-    @materia VARCHAR(100),
-    @parcial1 DECIMAL(4,2),
-    @parcial2 DECIMAL(4,2),
-    @final DECIMAL(4,2)
-AS
+DELIMITER //
+
+CREATE PROCEDURE registrar_nota(
+    IN alumno_id INT,
+    IN materia VARCHAR(100),
+    IN parcial1 DECIMAL(4,2),
+    IN parcial2 DECIMAL(4,2),
+    IN final DECIMAL(4,2)
+)
 BEGIN
     INSERT INTO Notas (alumno_id, materia, parcial1, parcial2, final)
-    VALUES (@alumno_id, @materia, @parcial1, @parcial2, @final);
-END;
+    VALUES (alumno_id, materia, parcial1, parcial2, final);
+END //
+
+DELIMITER ;
 ```
 
 ### ¿Qué significa cada parte?
 
-| Parte                   | ¿Qué hace?                     |
-| ----------------------- | ------------------------------ |
-| `@alumno_id INT`        | Recibe el ID del alumno        |
-| `@materia VARCHAR(100)` | Recibe el nombre de la materia |
-| `DECIMAL(4,2)`          | Guarda decimales como 8.75     |
+| Parte                     | ¿Qué hace?                     |
+| ------------------------- | ------------------------------ |
+| `IN alumno_id INT`        | Recibe el ID del alumno        |
+| `IN materia VARCHAR(100)` | Recibe el nombre de la materia |
+| `DECIMAL(4,2)`            | Guarda decimales como 8.75     |
 
 ---
 
-## 🔹 Ejemplo 3: Actualizar un dato solo si existe
+## 🔹 **Ejemplo 3: Actualizar un dato solo si existe**
 
 ```sql
-CREATE PROCEDURE actualizar_email
-    @id INT,
-    @nuevo_email VARCHAR(100)
-AS
+DELIMITER //
+
+CREATE PROCEDURE actualizar_email (
+    IN p_id INT,
+    IN p_nuevo_email VARCHAR(100)
+)
 BEGIN
-    IF EXISTS (SELECT 1 FROM Alumnos WHERE id = @id)
-    BEGIN
+    IF EXISTS (SELECT 1 FROM Alumnos WHERE id = p_id) THEN
         UPDATE Alumnos
-        SET email = @nuevo_email
-        WHERE id = @id;
-    END
+        SET email = p_nuevo_email
+        WHERE id = p_id;
     ELSE
-    BEGIN
-        PRINT 'El alumno no existe.';
-    END
-END;
+        SELECT 'El alumno no existe.' AS mensaje;
+    END IF;
+END //
+
+DELIMITER ;
 ```
 
-✅ ¿Qué pasa acá?
+✅ **¿Qué pasa acá?**
 
-- `IF EXISTS (...)` → Verifica si existe el alumno
-- `UPDATE` → Solo se ejecuta si el alumno está en la tabla
-- `PRINT` → Muestra un mensaje si no lo encuentra
+- `IF EXISTS (...)` → Verifica si existe el alumno.
+- `UPDATE` → Solo se ejecuta si el alumno está en la tabla.
 
 ---
 
-## 🔹 Ejemplo 4: Consultar y mostrar datos
+## 🔹 **Ejemplo 4: Consultar y mostrar datos**
 
 ```sql
-CREATE PROCEDURE ver_notas
-    @alumno_id INT
-AS
+DELIMITER //
+
+CREATE PROCEDURE ver_notas(
+    IN alumno_id INT
+)
 BEGIN
-    SELECT * FROM Notas WHERE alumno_id = @alumno_id;
-END;
+    SELECT * FROM Notas WHERE alumno_id = alumno_id;
+END //
+
+DELIMITER ;
 ```
 
 ---
 
-## 🔹 Bonus: ¿Qué significa cada símbolo?
 
-| Símbolo / palabra | ¿Qué significa? | ¿Para qué sirve?                       |
-| ----------------- | --------------- | -------------------------------------- |
-| `@`               | Parámetro       | Para pasarle datos al procedimiento    |
-| `=`               | Igualdad        | Para asignar un valor o comparar       |
-| `BEGIN ... END`   | Bloque          | Agrupa las instrucciones               |
-| `IF`              | Condición       | Para hacer algo si se cumple una regla |
-| `EXEC`            | Ejecutar        | Llama al procedimiento                 |
+## 🔹 **Bonus: ¿Qué significa cada símbolo?**
+
+| Símbolo / palabra | ¿Qué significa?       | ¿Para qué sirve?                                                                                                                                                                                                                               |
+| ----------------- | --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IN`              | Parámetro             | Define que el parámetro se pasa como **entrada** al procedimiento o función. Este es el valor que el usuario debe proporcionar al ejecutar el procedimiento.                                                                                   |
+| `@`               | Parámetro             | **Indicador de parámetro** en MySQL cuando se usa en la invocación del procedimiento. No se usa al declarar un parámetro dentro del procedimiento, pero sí al invocar variables o almacenar valores. Por ejemplo, `SET @mi_variable = valor;`. |
+| `=`               | Igualdad / Asignación | **Asignación** de valores a variables (dentro de procedimientos) o para **comparación** en condiciones. Por ejemplo, `SET @mi_variable = valor;` o `IF variable = valor THEN ...`.                                                             |
+| `BEGIN ... END`   | Bloque                | **Agrupa las instrucciones** dentro del procedimiento, función o trigger. Permite agrupar múltiples sentencias SQL para ejecutar como un bloque único.                                                                                         |
+| `IF`              | Condición             | Utilizado para **ejecutar una acción condicional** dentro del procedimiento, función o trigger. Por ejemplo, `IF condición THEN ... END IF;`.                                                                                                  |
+| `DELIMITER`       | Delimitador           | **Cambia temporalmente el delimitador** de comandos, permitiendo usar el `;` dentro de procedimientos, funciones o triggers sin que se termine la declaración del bloque. Por ejemplo: `DELIMITER //`.                                         |
+| `CALL`            | Ejecutar              | **Ejecuta un procedimiento almacenado**. Se usa para invocar procedimientos almacenados en MySQL. Por ejemplo: `CALL procedimiento(param1, param2);`.                                                                                          |
 
 ---
 
-## 🧪 Ejercicio propuesto
+### Detalles adicionales:
 
-1. Crear una función que calcule el porcentaje de asistencia de un alumno, dado el total de clases y las asistencias.
-2. Crear un procedimiento que registre una nueva nota para un alumno en una tabla llamada `Notas`.
+* **`IN`**: En MySQL, los parámetros pueden ser `IN`, `OUT`, o `INOUT`, dependiendo de si el parámetro es solo de entrada, solo de salida o de ambos. El uso más común es `IN`, ya que la mayoría de los procedimientos utilizan parámetros que solo reciben valores de entrada.
 
-## Respuestas
+* **`@`**: Se usa cuando **se quiere referenciar una variable** o cuando se trabaja con variables de sesión, como `@mi_variable`. En la declaración de un parámetro de procedimiento no es necesario el uso de `@`, pero cuando se hace una asignación dentro del procedimiento, o en la ejecución del procedimiento con variables, sí se usa.
+
+* **`DELIMITER`**: Cambia el carácter delimitador para poder definir procedimientos o funciones que contienen múltiples sentencias, sin que el sistema lo interprete como el final de la instrucción. Se suele cambiar temporalmente a algo como `//` y luego volver a `;` al finalizar.
+
+---
+
+En MySQL, se utiliza `IN` para indicar que el parámetro es de entrada (entrada de datos), `OUT` para los parámetros de salida, y `INOUT` para los parámetros que pueden ser tanto de entrada como de salida. Además, el delimitador debe cambiarse con `DELIMITER` para poder usar `;` dentro del bloque del procedimiento almacenado.
+
+---
 
 ## ✅ 1. Función: Calcular el porcentaje de asistencia
 
@@ -651,27 +804,28 @@ Dado el total de clases y la cantidad de clases a las que asistió un alumno, ca
 
 ```sql
 CREATE FUNCTION calcular_asistencia (
-    @total_clases INT,
-    @asistencias INT
+    total_clases INT,
+    asistencias INT
 )
 RETURNS DECIMAL(5,2)
-AS
+DETERMINISTIC
 BEGIN
-    DECLARE @porcentaje DECIMAL(5,2);
-    
-    IF @total_clases = 0
-        SET @porcentaje = 0;
+    DECLARE porcentaje DECIMAL(5,2);
+
+    IF total_clases = 0 THEN
+        SET porcentaje = 0;
     ELSE
-        SET @porcentaje = (@asistencias * 100.0) / @total_clases;
-    
-    RETURN @porcentaje;
+        SET porcentaje = (asistencias * 100.0) / total_clases;
+    END IF;
+
+    RETURN porcentaje;
 END;
 ```
 
 ### 🧪 Ejemplo de uso
 
 ```sql
-SELECT dbo.calcular_asistencia(40, 30) AS porcentaje_asistencia;
+SELECT calcular_asistencia(40, 30) AS porcentaje_asistencia;
 -- Resultado: 75.00
 ```
 
@@ -681,13 +835,13 @@ SELECT dbo.calcular_asistencia(40, 30) AS porcentaje_asistencia;
 
 ### 🎯 Objetivo
 
-Registrar una nota en una tabla `Notas` con campos para el alumno, los parciales y el examen final.
+Registrar una nueva nota para un alumno en la tabla `Notas`.
 
 ### 🗃️ Supongamos esta estructura para la tabla
 
 ```sql
 CREATE TABLE Notas (
-    id INT IDENTITY PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     alumno_id INT,
     parcial1 DECIMAL(5,2),
     parcial2 DECIMAL(5,2),
@@ -698,40 +852,36 @@ CREATE TABLE Notas (
 ### 🔧 Stored Procedure
 
 ```sql
-CREATE PROCEDURE registrar_nota
-    @alumno_id INT,
-    @parcial1 DECIMAL(5,2),
-    @parcial2 DECIMAL(5,2),
-    @final DECIMAL(5,2)
-AS
+DELIMITER //
+
+CREATE PROCEDURE registrar_nota(
+    IN alumno_id INT,
+    IN parcial1 DECIMAL(5,2),
+    IN parcial2 DECIMAL(5,2),
+    IN final DECIMAL(5,2)
+)
 BEGIN
     INSERT INTO Notas (alumno_id, parcial1, parcial2, final)
-    VALUES (@alumno_id, @parcial1, @parcial2, @final);
-END;
+    VALUES (alumno_id, parcial1, parcial2, final);
+END //
+
+DELIMITER ;
 ```
 
 ### 🧪 Ejemplo de ejecución
 
 ```sql
-EXEC registrar_nota 
-    @alumno_id = 1,
-    @parcial1 = 7.5,
-    @parcial2 = 8.0,
-    @final = 9.0;
+CALL registrar_nota(1, 7.5, 8.0, 9.0);
 ```
 
 ---
 
 ## 📌 Recomendaciones para recordar
 
-- Usa funciones cuando necesites **calcular y devolver un valor**.
-- Usa stored procedures cuando necesites realizar **acciones complejas o múltiples pasos** (INSERT, UPDATE, lógica condicional).
-- Nombra claramente tus funciones y procedimientos para que su propósito sea evidente.
-- Agrega validaciones dentro de los stored procedures para evitar errores comunes (ej: insertar datos duplicados).
-
----
-
-Vamos ahora con la explicación completa y clara de **Triggers**, **JOINS** y cómo se pueden combinar con **Stored Procedures**, siempre con ejemplos del ámbito educativo y explicando **qué es cada cosa** y **para qué sirve**.
+- Usa **funciones** cuando necesites **calcular y devolver un valor**. Son útiles para operaciones simples y cálculos, como el porcentaje de asistencia.
+- Usa **stored procedures** cuando necesites realizar **acciones complejas o múltiples pasos** (por ejemplo, insertar datos o actualizar tablas). Son ideales para operaciones que involucren lógica condicional o manipulación de múltiples tablas.
+- Nombra claramente tus **funciones** y **procedimientos** para que su propósito sea evidente y fácil de entender.
+- Agrega **validaciones** dentro de los **stored procedures** para evitar errores comunes (por ejemplo, verificar si el alumno existe antes de registrar la nota).
 
 ---
 
@@ -741,9 +891,7 @@ Vamos ahora con la explicación completa y clara de **Triggers**, **JOINS** y c�
 
 ## 🔶 1️⃣ ¿Qué es un `JOIN`?
 
-Un `JOIN` (*unión*) sirve para **combinar datos de varias tablas relacionadas**. Por ejemplo, si tenemos una tabla de alumnos y otra de notas, podemos mostrar el **nombre del alumno junto con sus notas**, aunque estén en tablas distintas.
-
----
+Un `JOIN` (*unión*) se utiliza para **combinar datos de varias tablas relacionadas**. Por ejemplo, si tenemos una tabla de **alumnos** y otra de **notas**, podemos obtener el **nombre del alumno junto con sus notas**, aunque los datos estén almacenados en tablas diferentes.
 
 ### 🎓 Ejemplo educativo
 
@@ -766,7 +914,7 @@ CREATE TABLE Notas (
 );
 ```
 
-### 👉 JOIN para mostrar el nombre y la nota
+### 👉 `JOIN` para mostrar el nombre del alumno junto con sus notas
 
 ```sql
 SELECT 
@@ -780,7 +928,7 @@ JOIN Notas N ON A.id = N.alumno_id;
 
 | Parte                   | ¿Qué significa?                                |
 | ----------------------- | ---------------------------------------------- |
-| `SELECT`                | Lo que querés mostrar                          |
+| `SELECT`                | Lo que queremos mostrar                        |
 | `FROM Alumnos A`        | Alias `A` para la tabla `Alumnos`              |
 | `JOIN Notas N`          | Une con la tabla `Notas`, alias `N`            |
 | `ON A.id = N.alumno_id` | Condición para unir: el ID del alumno coincide |
@@ -789,11 +937,7 @@ JOIN Notas N ON A.id = N.alumno_id;
 
 ## 🔶 2️⃣ ¿Qué es un `TRIGGER`?
 
-Un **Trigger** es como una **alarma o acción automática** que se ejecuta en respuesta a un evento en una tabla, como `INSERT`, `UPDATE` o `DELETE`.
-
-🧠 Se ejecuta solo, **sin que lo llames**, cuando pasa algo en la base de datos.
-
----
+Un **Trigger** es como una **alarma o acción automática** que se ejecuta en respuesta a un evento en una tabla, como `INSERT`, `UPDATE` o `DELETE`. 🧠 Se ejecuta solo **sin que lo llames**, cuando ocurre algo en la base de datos.
 
 ### 🎓 Ejemplo: Registrar cambios en las notas
 
@@ -803,42 +947,37 @@ Supongamos que queremos guardar un registro cada vez que se actualiza la nota de
 
 ```sql
 CREATE TABLE HistorialNotas (
-  id INT IDENTITY PRIMARY KEY,
+  id INT AUTO_INCREMENT PRIMARY KEY,
   alumno_id INT,
   materia VARCHAR(100),
   nota_anterior DECIMAL(4,2),
   nota_nueva DECIMAL(4,2),
-  fecha DATETIME DEFAULT GETDATE()
+  fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 ```
 
 #### 2. Creamos el trigger
 
 ```sql
+DELIMITER //
+
 CREATE TRIGGER trg_actualizar_nota
-ON Notas
-AFTER UPDATE
-AS
+AFTER UPDATE ON Notas
+FOR EACH ROW
 BEGIN
   INSERT INTO HistorialNotas (alumno_id, materia, nota_anterior, nota_nueva)
-  SELECT 
-    D.alumno_id,
-    D.materia,
-    D.nota,
-    I.nota
-  FROM deleted D
-  JOIN inserted I ON D.id = I.id;
-END;
+  VALUES (OLD.alumno_id, OLD.materia, OLD.nota, NEW.nota);
+END //
+
+DELIMITER ;
 ```
 
----
-
-### 🧩 ¿Qué significan `deleted` e `inserted`?
+### 🧩 ¿Qué significan `OLD` y `NEW`?
 
 | Palabra clave | ¿Qué representa?                 |
 | ------------- | -------------------------------- |
-| `deleted`     | Los datos **antes** del cambio   |
-| `inserted`    | Los datos **después** del cambio |
+| `OLD`         | Los datos **antes** del cambio   |
+| `NEW`         | Los datos **después** del cambio |
 
 Esto permite guardar el **antes y después** del cambio en la nota.
 
@@ -848,51 +987,65 @@ Esto permite guardar el **antes y después** del cambio en la nota.
 
 Podemos usar un `JOIN` dentro de un `Stored Procedure` para mostrar información combinada.
 
----
-
 ### 🎓 Ejemplo: Ver el detalle de un alumno con sus notas
 
 ```sql
-CREATE PROCEDURE ver_detalle_alumno
-  @alumno_id INT
-AS
+DELIMITER //
+
+CREATE PROCEDURE ver_detalle_alumno (
+    IN p_alumno_id INT
+)
 BEGIN
-  SELECT 
-    A.nombre,
-    A.apellido,
-    N.materia,
-    N.nota
-  FROM Alumnos A
-  JOIN Notas N ON A.id = N.alumno_id
-  WHERE A.id = @alumno_id;
-END;
+    SELECT 
+        A.nombre,
+        A.apellido,
+        N.materia,
+        N.nota
+    FROM Alumnos A
+    JOIN Notas N ON A.id = N.alumno_id
+    WHERE A.id = p_alumno_id;
+END //
+
+DELIMITER ;
 ```
 
-Y lo ejecutás así:
+Y lo ejecutas así:
 
 ```sql
-EXEC ver_detalle_alumno @alumno_id = 1;
+CALL ver_detalle_alumno(1);
 ```
 
 ---
 
 ## 🔶 4️⃣ ¿Cómo combinar Stored Procedure + Trigger?
 
-Imaginá que tenés un procedimiento que **modifica una nota**. Ese cambio activará el trigger que guarda el historial automáticamente.
+Imagina que tienes un procedimiento que **modifica una nota**. Ese cambio activará el trigger que guarda el historial automáticamente.
+
+### 🎓 Ejemplo: Modificar una nota y activar el trigger
 
 ```sql
-CREATE PROCEDURE modificar_nota
-  @nota_id INT,
-  @nueva_nota DECIMAL(4,2)
-AS
+DELIMITER //
+
+CREATE PROCEDURE modificar_nota (
+    IN p_nota_id INT,
+    IN p_nueva_nota DECIMAL(4,2)
+)
 BEGIN
-  UPDATE Notas
-  SET nota = @nueva_nota
-  WHERE id = @nota_id;
-END;
+    UPDATE Notas
+    SET nota = p_nueva_nota
+    WHERE id = p_nota_id;
+END //
+
+DELIMITER ;
 ```
 
-Y gracias al trigger `trg_actualizar_nota`, se guarda el cambio automáticamente en `HistorialNotas`.
+### Se llama
+
+```sql
+CALL modificar_nota(3, 9.75);
+```
+
+Y gracias al trigger `trg_actualizar_nota`, el cambio se guarda automáticamente en la tabla `HistorialNotas`.
 
 ---
 
@@ -908,7 +1061,7 @@ Y gracias al trigger `trg_actualizar_nota`, se guarda el cambio automáticamente
 
 ## 🏁 Conclusión
 
-Las funciones y procedimientos almacenados te permiten automatizar, simplificar y organizar mejor el código SQL. Son herramientas fundamentales para cualquier desarrollador o analista de bases de datos.
+Las funciones, procedimientos almacenados y triggers son herramientas esenciales para automatizar, organizar y simplificar la gestión de bases de datos. Combinados correctamente, te permiten hacer más eficiente el manejo de la lógica de la base de datos, manteniendo la integridad y el control en los procesos automáticos y personalizados.
 
 ---
 
