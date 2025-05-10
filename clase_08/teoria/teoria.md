@@ -111,7 +111,7 @@ Selecciona la columna `alumno_id` (el ID del alumno).
 
 ---
 
-### `dbo.calcular_promedio(...)`
+### `calcular_promedio(...)`
 
 #### 🔹 ¿Qué es `calcular_promedio(...)`?
 
