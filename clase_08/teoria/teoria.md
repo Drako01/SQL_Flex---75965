@@ -79,7 +79,7 @@ END;
 
 ```sql
 SELECT alumno_id,
-       dbo.calcular_promedio(parcial1, parcial2, final) AS nota_final
+       calcular_promedio(parcial1, parcial2, final) AS nota_final
 FROM Notas;
 ```
 
@@ -117,15 +117,6 @@ Selecciona la columna `alumno_id` (el ID del alumno).
 
 Es una **función personalizada** (creada por el usuario) que probablemente **devuelve el promedio** de tres notas (parcial1, parcial2, final).
 
-#### 🔹 ¿Qué es `dbo`?
-
-`dbo` es el **esquema** al que pertenece la función. En bases de datos como **SQL Server**, cada objeto (tabla, función, etc.) **pertenece a un esquema**.
-
-- `dbo` significa **database owner** (propietario de la base de datos).
-- Es el esquema **por defecto** en la mayoría de los casos.
-
-> 📌 Entonces `dbo.calcular_promedio(...)` significa:
-> “Ejecutar la función `calcular_promedio` del esquema `dbo`”.
 
 ---
 
@@ -135,7 +126,7 @@ Es una **función personalizada** (creada por el usuario) que probablemente **de
 - En este caso, el resultado de la función `calcular_promedio(...)` se mostrará como `nota_final`.
 
 ```sql
-dbo.calcular_promedio(...) AS nota_final
+calcular_promedio(...) AS nota_final
 ```
 
 > Es decir: “Mostrame el promedio, y llamalo `nota_final` en el resultado”.
@@ -192,7 +183,6 @@ SET @promedio = (8 + 9 + 10) / 3;
 | Concepto              | Significado                                   |
 | --------------------- | --------------------------------------------- |
 | `SELECT`              | Pide columnas de una tabla                    |
-| `dbo`                 | Esquema (propietario de objeto en SQL Server) |
 | `calcular_promedio()` | Función que devuelve el promedio de 3 notas   |
 | `AS nota_final`       | Alias: renombra la columna en el resultado    |
 | `FROM Notas`          | Indica la tabla de donde se sacan los datos   |
