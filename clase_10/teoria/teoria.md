@@ -296,11 +296,11 @@ START TRANSACTION;
 -- y los alumnos con ID 1, 2 y 3
 
 -- Inscripciones válidas
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (1, 1);
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (2, 2);
+CALL inscribir_alumno_seguro(1, 1);
+CALL inscribir_alumno_seguro(2, 2);
 
 -- Inserción con error (curso 99 no existe)
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (3, 99);
+CALL inscribir_alumno_seguro(3, 99);
 
 -- Al detectar el error, revertimos todo
 ROLLBACK;
@@ -322,15 +322,15 @@ ROLLBACK;
 START TRANSACTION;
 
 -- Primer inscripción válida
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (1, 1);
+CALL inscribir_alumno_seguro(1, 1);
 SAVEPOINT paso_1;
 
 -- Segunda inscripción válida
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (2, 2);
+CALL inscribir_alumno_seguro(2, 2);
 SAVEPOINT paso_2;
 
 -- Tercer inscripción con error
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (3, 99); -- curso 99 no existe
+CALL inscribir_alumno_seguro(3, 99); -- curso 99 no existe
 
 -- Volvemos al punto anterior
 ROLLBACK TO paso_2;
