@@ -78,4 +78,30 @@ ROLLBACK TO paso_4;
 
 COMMIT;
 
--- BackUp
+-- BackUp (Copia de Seguridad)
+
+
+/*
+Comandos por consola
+
+mysqldump -u usuario -p nombre_base_de_datos > respaldo.sql
+
+Para Exportar
+mysqldump -u root -p coderhouse2 > respaldo_coderhouse2.sql
+
+Para Importar
+mysql -u root -p coderhouse3 < backup.dump.sql
+
+*/
+
+/*
+Crear archivo .bat para Automatizar Tarea
+
+Que se llame backup.bat
+
+
+@echo off
+set fecha=%date:~10
+mysqldump -u root -p coderhouse2 > "C:\backup\respaldo_coderhouse2.sql"
+
+*/
