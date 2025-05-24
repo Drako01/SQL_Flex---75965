@@ -255,9 +255,9 @@ Agreguemos un ejemplo con más cursos y un rollback total:
 START TRANSACTION;
 
 -- Inscribimos varios alumnos
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (1, 2); -- OK
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (2, 2); -- OK
-INSERT INTO inscripciones (id_alumno, id_curso) VALUES (3, 5); -- ERROR (no existe curso 5)
+CALL inscribir_alumno_seguro(1, 2); -- OK
+CALL inscribir_alumno_seguro(2, 2); -- OK
+CALL inscribir_alumno_seguro(3, 5); -- ERROR (no existe curso 5)
 
 ROLLBACK; -- Cancelamos todo
 
