@@ -50,10 +50,110 @@ La tabla `inscripciones` usa **claves foráneas (FOREIGN KEY)** para conectar al
 
 ### 3. **Agregamos algunos datos**
 
+---
+
+### ✅ Objetivo
+
+* Evitar inscripciones duplicadas.
+* Insertar una nueva inscripción si no existe.
+* Retornar un mensaje indicando el resultado.
+* Poder ser usado dentro de una transacción de forma segura.
+
+---
+
+### 📦 Estructura esperada
+
+Las tablas utilizadas son las que definiste antes:
+
+* `alumnos(id_alumno)`
+* `cursos(id_curso)`
+* `inscripciones(id_alumno, id_curso, inscription_at)`
+
+---
+
+### 🧠 Procedimiento: `inscribir_alumno_seguro`
+
 ```sql
-INSERT INTO alumnos (...)
-INSERT INTO cursos (...)
+DELIMITER //
+
+CREATE PROCEDURE inscribir_alumno_seguro(IN p_id_alumno INT, IN p_id_curso INT)
+BEGIN
+    DECLARE existe_alumno INT DEFAULT 0;
+    DECLARE existe_curso INT DEFAULT 0;
+    DECLARE existe_inscripcion INT DEFAULT 0;
+
+    -- Validar si el alumno existe
+    SELECT COUNT(*) INTO existe_alumno
+    FROM alumnos
+    WHERE id_alumno = p_id_alumno;
+
+    -- Validar si el curso existe
+    SELECT COUNT(*) INTO existe_curso
+    FROM cursos
+    WHERE id_curso = p_id_curso;
+
+    -- Si no existe el alumno o el curso, mostrar mensaje de error y finalizar
+    IF existe_alumno = 0 THEN
+        SELECT '❌ El alumno no existe.' AS mensaje;
+    ELSEIF existe_curso = 0 THEN
+        SELECT '❌ El curso no existe.' AS mensaje;
+    ELSE
+        -- Verificar si ya está inscrito
+        SELECT COUNT(*) INTO existe_inscripcion
+        FROM inscripciones
+        WHERE id_alumno = p_id_alumno AND id_curso = p_id_curso;
+
+        IF existe_inscripcion > 0 THEN
+            SELECT '⚠️ El alumno ya está inscrito en este curso.' AS mensaje;
+        ELSE
+            INSERT INTO inscripciones (id_alumno, id_curso)
+            VALUES (p_id_alumno, p_id_curso);
+            SELECT '✅ Inscripción realizada correctamente.' AS mensaje;
+        END IF;
+    END IF;
+END;
+//
+
+DELIMITER ;
+
 ```
+
+---
+
+### ✅ ¿Cómo usarlo?
+
+```sql
+CALL inscribir_alumno_seguro(1, 2);
+```
+
+Este ejemplo intenta inscribir al alumno con `id = 1` en el curso con `id = 2`.
+
+---
+
+### 🧩 Usarlo dentro de una transacción
+
+Podés incluir este procedimiento dentro de una transacción sin problemas:
+
+```sql
+START TRANSACTION;
+
+CALL inscribir_alumno_seguro(1, 2);
+
+-- Podés agregar más instrucciones aquí...
+
+COMMIT;
+```
+
+---
+
+### 📌 Notas
+
+* Este procedimiento es una forma **segura y recomendada** de manejar lógica con modificaciones (`INSERT`) en la base de datos.
+* Puede ser usado dentro de una transacción, lo cual permite agrupar múltiples operaciones de forma atómica.
+* Si necesitás, se puede extender para validar si el alumno o curso existen antes de intentar inscribir.
+* Retorna un mensaje de éxito o advertencia mediante un `SELECT`, que puede ser capturado por el cliente (Workbench, PHP, Java, etc.).
+
+---
 
 > ✅ Insertamos 3 alumnos y 3 cursos. Ya tenemos datos con los cuales trabajar.
 
